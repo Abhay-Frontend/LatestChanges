@@ -25,13 +25,13 @@ export default function NavbarSearchComponent({
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   const trendingSearches = ["Valentines fits", "For Office", "Vacation Wear"];
-  const {data:collections} = useCollection("displayFor=homepage");
+  const { data: collections } = useCollection("displayFor=homepage");
 
   const trendingCollection = collections?.find(
-    (col)=>col.name ==="Trending Now"
+    (col) => col.name === "Trending Now"
   );
 
-  const trendingProducts = trendingCollection?.products?.slice(0,4)||[];
+  const trendingProducts = trendingCollection?.products?.slice(0, 4) || [];
 
 
   // Fetch suggestions on search query change
@@ -169,25 +169,25 @@ export default function NavbarSearchComponent({
                   //   </a>
                   // ))
                   suggestions
-                  .filter((s) => s.keyword) // Only keep suggestions with a keyword
-                  .map((suggestion, index) => (
-                    <a
-                      key={index}
-                      href={`/products?key=${suggestion.keyword.trim()}`}
-                      onClick={() => handleSuggestionClick(suggestion.keyword)}
-                      className="h-auto sm:h-7 px-2 sm:px-2.5 py-1 sm:py-1.5 bg-zinc-100 rounded flex justify-between items-center gap-2 cursor-pointer hover:bg-zinc-200 transition-colors min-w-fit"
-                    >
-                      <div className="flex justify-center items-start gap-2.5">
-                        <div className="justify-start text-neutral-700 text-xs sm:text-sm font-normal">
-                          {suggestion.keyword}
+                    .filter((s) => s.keyword) // Only keep suggestions with a keyword
+                    .map((suggestion, index) => (
+                      <a
+                        key={index}
+                        href={`/products?key=${suggestion.keyword.trim()}`}
+                        onClick={() => handleSuggestionClick(suggestion.keyword)}
+                        className="h-auto sm:h-7 px-2 sm:px-2.5 py-1 sm:py-1.5 bg-zinc-100 rounded flex justify-between items-center gap-2 cursor-pointer hover:bg-zinc-200 transition-colors min-w-fit"
+                      >
+                        <div className="flex justify-center items-start gap-2.5">
+                          <div className="justify-start text-neutral-700 text-xs sm:text-sm font-normal">
+                            {suggestion.keyword}
+                          </div>
                         </div>
-                      </div>
-                      {/* Optional: display count
+                        {/* Optional: display count
                       <div className="text-neutral-500 text-xs sm:text-sm font-normal">
                         {suggestion.count}
                       </div> */}
-                    </a>
-                  ))
+                      </a>
+                    ))
                 ) : recentSearches.length > 0 ? (
                   recentSearches.map((search, index) => (
                     <a
@@ -242,33 +242,33 @@ export default function NavbarSearchComponent({
 
         {/* Trending Now Collections Preview */}
         {!searchQuery && trendingCollection && (
-        <Link
-          href={`/products?collectionId=${trendingCollection.id}`}
-          onClick={() => setIsOpen(false)}
-          className="hidden lg:flex justify-start items-center gap-3 group"
-        >
-          {trendingProducts.map((product) => (
-            <div
-              key={product.id}
-              className="w-[110px] h-[130px] relative rounded-xl overflow-hidden"
-            >
-              <Image
-                src={
-                  product.imageUrls?.[0] ||
-                  product.image 
-                }
-                alt={product.title || product.name}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-          ))}
+          <Link
+            href={`/products?collectionId=${trendingCollection.id}`}
+            onClick={() => setIsOpen(false)}
+            className="hidden lg:flex justify-start items-center gap-3 group"
+          >
+            {trendingProducts.map((product) => (
+              <div
+                key={product.id}
+                className="w-[110px] h-[130px] relative rounded-xl overflow-hidden"
+              >
+                <Image
+                  src={
+                    product.imageUrls?.[0] ||
+                    product.image
+                  }
+                  alt={product.title || product.name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+            ))}
 
-          <div className="absolute bottom-2 left-2 text-white text-xs font-semibold">
-            POPULAR CHOICES
-          </div>
-        </Link>
-      )}
+            <div className="absolute bottom-2 left-2 text-white text-xs font-semibold">
+              POPULAR CHOICES
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   );

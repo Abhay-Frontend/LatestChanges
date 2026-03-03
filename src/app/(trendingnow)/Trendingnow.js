@@ -171,11 +171,10 @@ const TrendingNowSection = () => {
                 <button
                   onClick={() => handlePrevPage(collection.id)}
                   disabled={currentPage === 0 || shouldDisableChevrons}
-                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center cursor-pointer transition text-sm sm:text-base ${
-                    currentPage === 0 || shouldDisableChevrons
-                      ? "text-[#A0A0A0]"
-                      : "text-black hover:bg-stone-950 hover:text-white"
-                  }`}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center cursor-pointer transition text-sm sm:text-base ${currentPage === 0 || shouldDisableChevrons
+                    ? "text-[#A0A0A0]"
+                    : "text-black hover:bg-stone-950 hover:text-white"
+                    }`}
                 >
                   <ChevronLeft
                     size={16}
@@ -188,11 +187,10 @@ const TrendingNowSection = () => {
                   disabled={
                     currentPage === totalPages - 1 || shouldDisableChevrons
                   }
-                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center cursor-pointer transition text-sm sm:text-base ${
-                    currentPage === totalPages - 1 || shouldDisableChevrons
-                      ? "text-[#A0A0A0]"
-                      : "text-black hover:bg-stone-950 hover:text-white"
-                  }`}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center cursor-pointer transition text-sm sm:text-base ${currentPage === totalPages - 1 || shouldDisableChevrons
+                    ? "text-[#A0A0A0]"
+                    : "text-black hover:bg-stone-950 hover:text-white"
+                    }`}
                 >
                   <ChevronRight
                     size={16}
@@ -208,23 +206,23 @@ const TrendingNowSection = () => {
                 // Extract variant sizes from variants array
                 const availableSizes = product.variants
                   ? product.variants
-                      .map((variant) => {
-                        let options = [];
-                        try {
-                          if (typeof variant.selectedOptions === "string") {
-                            options = JSON.parse(variant.selectedOptions);
-                          } else if (Array.isArray(variant.selectedOptions)) {
-                            options = variant.selectedOptions;
-                          }
-                        } catch (e) {
-                          options = [];
+                    .map((variant) => {
+                      let options = [];
+                      try {
+                        if (typeof variant.selectedOptions === "string") {
+                          options = JSON.parse(variant.selectedOptions);
+                        } else if (Array.isArray(variant.selectedOptions)) {
+                          options = variant.selectedOptions;
                         }
-                        const sizeOption = options.find(
-                          (opt) => opt.name === "Size",
-                        );
-                        return sizeOption?.value || "";
-                      })
-                      .filter(Boolean)
+                      } catch (e) {
+                        options = [];
+                      }
+                      const sizeOption = options.find(
+                        (opt) => opt.name === "Size",
+                      );
+                      return sizeOption?.value || "";
+                    })
+                    .filter(Boolean)
                   : [];
 
                 // Transform the product data to match CollectionCard requirements

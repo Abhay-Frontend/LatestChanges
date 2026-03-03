@@ -21,7 +21,7 @@ const useCollection = (query) => {
         const result = await axiosHttp.get(endPoint);
 
         if (result?.status === 200) {
-          setProducts(result?.data?.data);
+          setProducts(result?.data?.data?.collections || []);
         }
       } catch (err) {
         setError(err);

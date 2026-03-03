@@ -6,7 +6,7 @@ export const endPoints = {
   resendOtp: "/auth/resend-otp",
   updateUser: "/auth/update-user-profile",
   socialSignIn: "/auth/social-sign-in",
-  getCollection: "/collection-with-products",
+  getCollection: "/product-collection/collection-with-products",
   getCategories: "/categories",
   getBanners: "/banners",
   getBlogs: "/get-blogs",
