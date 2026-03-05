@@ -40,6 +40,20 @@ const CheckOutAddress = () => {
   
   const buyNowProduct = useSelector((state) => state.buyNow?.product);
   const cartItems = useSelector((state) => state.cart.items);
+
+  useEffect(() => {
+    if (userId && !loading && products.length > 0 && orderTotal>0) {
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq('track', 'InitiateCheckout', {
+          content_ids: products.map(p => p.productId.toString()),
+          content_type: 'product',
+          value: orderTotal,
+          currency: 'INR',
+          num_items: products.reduce((sum, p) => sum + (p.quantity || 1), 0)
+        });
+      }
+    }
+  }, [userId, loading, products,orderTotal]); // Fires when products finish loading
   
 
   // Load Razorpay script
@@ -463,6 +477,22 @@ const CheckOutAddress = () => {
               placeResp.data &&
               (placeResp.data.status === 200 || placeResp.data.status === 201)
             ) {
+              // TRIGGER PURCHASE EVENT HERE
+              if (typeof window !== "undefined" && window.fbq && products?.length) {
+                window.fbq('track', 'Purchase', {
+                  content_ids: paymentInfo.items.map(i => i.productId.toString()),
+                  content_type: 'product',
+                   contents: paymentInfo.items.map(i => ({
+                    id: i.productId.toString(),
+                    quantity: i.quantity,
+                    item_price: i.unitPrice
+                  })),
+                  value: Number(paymentInfo.total),
+                  currency: 'INR',
+                  num_items: paymentInfo.items.reduce((sum,i)=>sum+i.quantity,0),
+                  transaction_id: response.razorpay_payment_id // Important for deduplication
+                });
+              }
               // Clear cart items from backend - delete only ordered items one by one
               try {
                 // Use the items array that was sent in the order
@@ -545,6 +575,20 @@ const CheckOutAddress = () => {
           },
         },
       };
+
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq('track', 'AddPaymentInfo', {
+          content_ids: products.map(p => p.productId.toString()),
+           contents: products.map(p => ({
+            id: p.productId.toString(),
+            quantity: p.quantity || 1,
+            item_price: p.price
+          })),
+          content_type: 'product',
+          value: paymentTotal,
+          currency: 'INR'
+        });
+      }
 
       const rzp = new window.Razorpay(options);
 

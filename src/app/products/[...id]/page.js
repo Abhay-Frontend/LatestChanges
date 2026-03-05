@@ -30,7 +30,8 @@ const extractSizesFromVariants = (variants) => {
     const selectedOptions = getParsedSelectedOptions(variant.selectedOptions);
     const sizeOption = selectedOptions.find((o) => o.name === "Size");
     const colorOptions = selectedOptions.filter((o) => o.name === "Color");
-    const availableStock = variant.inventory?.availableStock ?? 0;
+    // const availableStock = variant.inventory?.availableStock ?? 0;
+    const availableStock = variant.inventories?.[0]?.availableStock ?? 0;
     const rawSize = sizeOption?.value ?? "";
     const sizeValue = normalizeSize(rawSize);
 
@@ -78,7 +79,8 @@ const extractColorsFromVariants = (variants) => {
   variants.forEach((variant) => {
     const selectedOptions = getParsedSelectedOptions(variant.selectedOptions);
     const colorOptions = selectedOptions.filter((o) => o.name === "Color");
-    const availableStock = variant.inventory?.availableStock ?? 0;
+    // const availableStock = variant.inventory?.availableStock ?? 0;
+    const availableStock = variant.inventories?.[0]?.availableStock ?? 0;
     colorOptions.forEach((colorOption) => {
       const colorValue = colorOption?.value;
       if (!colorValue) return;
@@ -166,17 +168,26 @@ export default function ProductPage({ params: paramsPromise }) {
     }
   }, [data]);
 
+  const fetchReviews = async () => {
+    if (!data?.id) return;
+    try {
+      const response = await axiosHttp.get(`/reviews?productId=${data.id}`);
+      if (response?.data?.status === 200) {
+        const payload = response.data.data;
+        setReviews(
+          Array.isArray(payload)
+            ? payload
+            : payload
+            ? [payload]
+            : response.data.reviews || []
+        );
+      }
+    } catch (e) {
+      console.error("Review fetch error", e);
+    }
+  };
+
   useEffect(() => {
-    const fetchReviews = async () => {
-      if (!data?.id) return;
-      try {
-        const response = await axiosHttp.get(`/reviews?productId=${data.id}`);
-        if (response?.data?.status === 200) {
-          const payload = response.data.data;
-          setReviews(Array.isArray(payload) ? payload : payload ? [payload] : response.data.reviews || []);
-        }
-      } catch (e) { console.error("Review fetch error", e); }
-    };
     fetchReviews();
   }, [data?.id]);
 
@@ -229,7 +240,7 @@ export default function ProductPage({ params: paramsPromise }) {
 
   const handleAddToWishlist = () => {
     if (typeof window !== "undefined" && window.fbq) {
-      window.fbq('track', 'AddToWishlist', {
+      window.fbq('track', 'AddToWishlist', {  
         content_ids: [data.id.toString()],
         content_name: data.title,
         value: parseFloat(variantPrice),
@@ -289,7 +300,12 @@ export default function ProductPage({ params: paramsPromise }) {
             <ProductActions 
               onAddToBag={handleAddToBag} onAddToWishlist={handleAddToWishlist}
               productData={data} productId={data?.id} quantity={quantity}
-              isInStock={selectedVariant ? (selectedVariant.available ?? selectedVariant.inventory?.availableStock > 0) : data?.variants?.some(v => v.inventory?.availableStock > 0)}
+              //isInStock={selectedVariant ? (selectedVariant.available ?? selectedVariant.inventory?.availableStock > 0) : data?.variants?.some(v => v.inventory?.availableStock > 0)}
+              isInStock={
+                selectedVariant
+                  ? (selectedVariant.inventories?.[0]?.availableStock > 0)
+                  : data?.variants?.some(v => v.inventories?.[0]?.availableStock > 0)
+              }
               onMessage={handleMessage} selectedVariant={selectedVariant} sizes={sizes}
             />
 

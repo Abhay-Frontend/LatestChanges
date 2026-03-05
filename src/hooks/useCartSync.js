@@ -10,11 +10,9 @@ const useCartSync = () => {
   const syncInProgress = useRef(false);
   const hasFetchedCart = useRef(false);
 
-  // Get userId from Redux
   const userInfo = useSelector((state) => state.user?.userInfo);
   const userId = userInfo?.id;
 
-  // Get cart items from Redux
   const cartItems = useSelector((state) => state.cart?.items || []);
 
   // Fetch cart items from server when user logs in
@@ -26,90 +24,108 @@ const useCartSync = () => {
 
       try {
         const response = await axiosHttp.get(`/cart-items/${userId}`);
+if (response.data.status === 200 && response.data.data?.items) {
+  const itemsArray = response.data.data.items; // ✅ get the array
+  const transformedData = itemsArray.map((item) => ({
+    id: item.id,
+    cartItemId: item.id,
+    productId: item.productId,
+    variantId: item.variantId,
+    title: item.product.title,
+    description: item.product.shortDescription || item.product.description,
+    imageUrls: item.product.imageUrls || [],
+    basePrice: item.pricing?.unitPrice || item.product_variant?.price || item.product.basePrice || 0,
+    mrp: item.product.mrp || item.product.basePrice,
+    quantity: item.quantity || 1,
+    variants: item.product_variant
+      ? [{
+          id: item.variantId,
+          title: item.product_variant.title,
+          price: item.product_variant.price,
+          imageSrc: item.product_variant.imageSrc,
+        }]
+      : [],
+    type: item.product.type,
+    tags: item.product.tags,
+    hasCOD: item.product.hasCOD,
+    hasExchange: item.product.hasExchange,
+    exchangeDays: item.product.exchangeDays,
+    selected: true,
+  }));
 
-        if (response.data.status === 200 && response.data.data) {
-          // Transform API data to Redux format
-          const transformedData = response.data.data.map((item) => ({
-            id: item.productId,
-            cartItemId: item.id,
-            productId: item.productId,
-            variantId: item.variantId,
-            title: item.product.title,
-            description:
-              item.product.shortDescription || item.product.description,
-            imageUrls: item.product.imageUrls || [],
-            basePrice:
-              item.pricing?.unitPrice ||
-              item.product_variant?.price ||
-              item.product.basePrice ||
-              0,
-            mrp: item.product.mrp || item.product.basePrice,
-            quantity: item.quantity || 1,
-            variants: item.product_variant
-              ? [
-                  {
-                    id: item.variantId,
-                    title: item.product_variant.title,
-                    price: item.product_variant.price,
-                    imageSrc: item.product_variant.imageSrc,
-                  },
-                ]
-              : [],
-            type: item.product.type,
-            tags: item.product.tags,
-            hasCOD: item.product.hasCOD,
-            hasExchange: item.product.hasExchange,
-            exchangeDays: item.product.exchangeDays,
-            selected: true,
-          }));
-
-          // Update Redux with fetched cart items
-          dispatch(setCartItems(transformedData));
-        }
-      } catch (error) {}
+  dispatch(setCartItems(transformedData));
+}
+      } catch (error) {
+        console.error("Fetch cart failed:", error);
+      }
     };
 
     fetchCartFromServer();
   }, [userId, dispatch]);
 
-  // Sync local cart to server when user logs in (if they had items before login)
+  // Sync local cart to server when user logs in
   useEffect(() => {
     const syncCartToServer = async () => {
-      // Prevent concurrent syncs
       if (syncInProgress.current) return;
+      if (!userId || cartItems.length === 0 || isInitialSync.current) return;
 
-      // Only sync if:
-      // 1. User is logged in (userId exists)
-      // 2. Redux has cart items
-      // 3. This is the first time syncing for this session
-      if (userId && cartItems.length > 0 && !isInitialSync.current) {
-        syncInProgress.current = true;
-        isInitialSync.current = true;
+      syncInProgress.current = true;
+      isInitialSync.current = true;
 
-        try {
-          // Transform Redux cart items to API payload format
-          const payload = {
-            userId: userId,
-            items: cartItems.map((item) => ({
-              productId: item.productId || item.id,
-              variantId: item.variantId || null,
-            })),
-          };
+      try {
+        // 1️⃣ Sync local items
+        await axiosHttp.post(endPoints.cartsync, {
+          userId,
+          cartType: "ECOM",
+          items: cartItems.map((item) => ({
+            productId: item.productId,
+            variantId: item.variantId || null,
+            quantity: item.quantity || 1,
+          })),
+        });
 
-          const response = await axiosHttp.post(endPoints.cartsync, payload);
+        // 2️⃣ Fetch updated cart from server
+       const response = await axiosHttp.get(`/cart-items/${userId}`);
+if (response.data.status === 200 && response.data.data?.items) {
+  const itemsArray = response.data.data.items; // ✅ get the array
+  const transformedData = itemsArray.map((item) => ({
+    id: item.id,
+    cartItemId: item.id,
+    productId: item.productId,
+    variantId: item.variantId,
+    title: item.product.title,
+    description: item.product.shortDescription || item.product.description,
+    imageUrls: item.product.imageUrls || [],
+    basePrice: item.pricing?.unitPrice || item.product_variant?.price || item.product.basePrice || 0,
+    mrp: item.product.mrp || item.product.basePrice,
+    quantity: item.quantity || 1,
+    variants: item.product_variant
+      ? [{
+          id: item.variantId,
+          title: item.product_variant.title,
+          price: item.product_variant.price,
+          imageSrc: item.product_variant.imageSrc,
+        }]
+      : [],
+    type: item.product.type,
+    tags: item.product.tags,
+    hasCOD: item.product.hasCOD,
+    hasExchange: item.product.hasExchange,
+    exchangeDays: item.product.exchangeDays,
+    selected: true,
+  }));
 
-          if (response.data.status === 200) {
-          }
-        } catch (error) {
-          // Don't throw error - let the app continue normally
-        } finally {
-          syncInProgress.current = false;
-        }
+  dispatch(setCartItems(transformedData));
+}
+      } catch (error) {
+        console.error("Cart sync failed:", error);
+      } finally {
+        syncInProgress.current = false;
       }
     };
 
     syncCartToServer();
-  }, [userId]); // Only depend on userId, not cartItems.length
+  }, [userId]); // only depend on userId
 
   return {
     isSynced: isInitialSync.current,

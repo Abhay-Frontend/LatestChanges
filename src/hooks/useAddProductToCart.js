@@ -33,6 +33,7 @@ const useAddProductToCart = () => {
         productId: parseInt(productId, 10),
         variantId: parseInt(variantId, 10),
         quantity: parseInt(quantity, 10),
+        cartType: "ECOM",
       };
       const result = await axiosHttp.post(endPoints.addProductToCart, payload);
 

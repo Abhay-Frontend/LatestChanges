@@ -139,75 +139,74 @@ const ShoppingCart = () => {
       isInitialMount.current = false;
     }
   }, [products, userId, dispatch]);
+const fetchCartItems = async () => {
+  try {
+    setLoading(true);
+    const response = await axiosHttp.get(`/cart-items/${userId}`);
 
-  const fetchCartItems = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosHttp.get(`/cart-items/${userId}`);
+    if (response.data.status === 200 && response.data.data) {
+      // Fix here: access items array
+      const itemsArray = response.data.data.items || [];
 
-      if (response.data.status === 200 && response.data.data) {
-        // Transform API data to component format - use quantity directly from API
-        const transformedData = response.data.data.map((item) => ({
-          id: item.id,
-          cartItemId: item.id,
-          productId: item.productId,
-          variantId: item.variantId,
-          name: item.product.title,
-          description:
-            item.product.shortDescription || item.product.description,
-          image:
-            item.product_variant?.imageSrc || item.product.imageUrls[0] || "",
-          imageUrls: item.product.imageUrls,
-          price:
-            item.pricing?.unitPrice ||
-            item.product_variant?.price ||
-            item.product.basePrice ||
-            0,
-          originalPrice: item.product.mrp || item.product.basePrice,
-          size: item.product_variant?.title || "One Size",
-          quantity: item.quantity || 1, // Use quantity directly from API
-          availableStock: item.product_variant?.inventory?.availableStock || 0, // Available stock from inventory
-          availableSizes: item.product_variant?.title
-            ? [item.product_variant.title]
-            : ["One Size"],
-          type: item.product.type,
-          tags: item.product.tags,
-          hasCOD: item.product.hasCOD,
-          hasExchange: item.product.hasExchange,
-          exchangeDays: item.product.exchangeDays,
-        }));
+      const transformedData = itemsArray.map((item) => ({
+        id: item.id,
+        cartItemId: item.id,
+        productId: item.productId,
+        variantId: item.variantId,
+        name: item.product.title,
+        description:
+          item.product.shortDescription || item.product.description,
+        image:
+          item.product_variant?.imageSrc || item.product.imageUrls[0] || "",
+        imageUrls: item.product.imageUrls,
+        price:
+          item.pricing?.unitPrice ||
+          item.product_variant?.price ||
+          item.product.basePrice ||
+          0,
+        originalPrice: item.product.mrp || item.product.basePrice,
+        size: item.product_variant?.title || "One Size",
+        quantity: item.quantity || 1,
+        availableStock:
+          item.product_variant?.inventory?.availableStock || 0,
+        availableSizes: item.product_variant?.title
+          ? [item.product_variant.title]
+          : ["One Size"],
+        type: item.product.type,
+        tags: item.product.tags,
+        hasCOD: item.product.hasCOD,
+        hasExchange: item.product.hasExchange,
+        exchangeDays: item.product.exchangeDays,
+      }));
 
-        setProducts(transformedData);
+      setProducts(transformedData);
 
-        // Keep Redux cart items in sync for selection state only
-        const payload = transformedData.map((m) => ({
-          ...m,
-          cartItemId: m.cartItemId,
-          variantId: m.variantId || null,
-          selected:
-            (
-              cartItemsFromRedux.find((ci) => ci.cartItemId === m.cartItemId) ||
-              {}
-            ).selected ?? true,
-        }));
+      const payload = transformedData.map((m) => ({
+        ...m,
+        cartItemId: m.cartItemId,
+        variantId: m.variantId || null,
+        selected:
+          (cartItemsFromRedux.find((ci) => ci.cartItemId === m.cartItemId)
+            ?.selected ?? true),
+      }));
 
-        dispatch(setCartItems(payload));
+      dispatch(setCartItems(payload));
 
-        // Trigger cross-tab sync via localStorage 
-        try {
-          localStorage.setItem("lafetch_cart_updated", JSON.stringify(payload));
-          // Clear immediately so it can be triggered again
-          setTimeout(
-            () => localStorage.removeItem("lafetch_cart_updated"),
-            100,
-          );
-        } catch (e) {}
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
+      // Trigger cross-tab sync via localStorage
+      try {
+        localStorage.setItem("lafetch_cart_updated", JSON.stringify(payload));
+        setTimeout(
+          () => localStorage.removeItem("lafetch_cart_updated"),
+          100,
+        );
+      } catch (e) {}
     }
-  };
+
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+  }
+};
 
   // Persist checkout selection state to localStorage
   useEffect(() => {

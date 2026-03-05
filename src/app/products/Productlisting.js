@@ -12,6 +12,9 @@ import useFilterMetadata from "@/hooks/useFilterMetadata";
 import useUnifiedFilter from "@/hooks/useUnifiedFilter";
 import useProducts from "@/hooks/useProducts";
 
+import BannerGrid from "@/components/collections/BannerGrid";
+import useCollection from "@/hooks/useCollection";
+
 const ShopByCategoriesPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -24,6 +27,13 @@ const ShopByCategoriesPage = () => {
   const searchQuery = searchParams.get("key")
     ? decodeURIComponent(searchParams.get("key"))
     : null;
+
+  // const { data: collections } = useCollection(
+  // collectionId ? `id=${collectionId}` : null
+  // );
+
+  // const collection = collections?.[0];
+  // const banners = collection?.banners || [];  
 
   // ===== FILTER STATE =====
   const [selectedBrands, setSelectedBrands] = useState(() => {
@@ -248,6 +258,15 @@ const ShopByCategoriesPage = () => {
 
   return (
     <div className="min-h-screen bg-white relative mt-[130px]">
+      {/* {collectionId && banners.length > 0 && (
+        <div className="px-4 sm:px-6 md:px-[100px] mb-8">
+          <BannerGrid
+            banners={banners}
+            bannerCount={banners.length}
+            // displayFor="collection"
+          />
+        </div>
+      )} */}
       {/* MOBILE FILTER BUTTON */}
       <button
         className="lg:hidden fixed bottom-4 left-4 z-10 bg-black text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-lg"

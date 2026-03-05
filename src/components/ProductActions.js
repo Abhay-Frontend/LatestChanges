@@ -27,6 +27,18 @@ const ProductActions = ({
   const handleWishlistClick = () => {
     setShowModal(true);
     dispatch(openWishlistModal());
+
+      // ✅ Meta Pixel for Wishlist
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "AddToWishlist", {
+        content_ids: [selectedVariant?.id?.toString() || productData?.variants?.[0]?.id?.toString() || productData.id],
+        content_name: productData.title,
+        content_type: "product",
+        value: parseFloat(selectedVariant?.price || productData.variants?.[0]?.price || 0),
+        currency: "INR",
+      });
+    }
+    if (onAddToWishlist) onAddToWishlist();
   };
 
   const handleAddToBag = async () => {
@@ -50,6 +62,17 @@ const ProductActions = ({
     if (result.success) {
       dispatch(addToCart({ product: productData, variantId }));
       if (onMessage) onMessage({ type: "success", text: result.message });
+
+       // ✅ Fire the Meta Pixel event here
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq('track', 'AddToCart', {
+          content_ids: [selectedVariant?.id?.toString() || variantId],
+          content_name: productData.title,
+          content_type: 'product',
+          value: parseFloat(selectedVariant?.price || productData.variants?.[0]?.price || 0),
+          currency: 'INR',
+        });
+      }
     } else {
       if (onMessage) onMessage({ type: "error", text: result.message });
     }
@@ -70,6 +93,17 @@ const ProductActions = ({
     );
 
     router.push("/checkout/address");
+
+    // ✅ Meta Pixel for Purchase Intent / InitiateCheckout
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "InitiateCheckout", {
+        content_ids: [selectedVariant.id.toString()],
+        content_name: productData.title,
+        content_type: "product",
+        value: parseFloat(selectedVariant.price || productData.variants?.[0]?.price || 0),
+        currency: "INR",
+      });
+    }
   }
 
   return (
