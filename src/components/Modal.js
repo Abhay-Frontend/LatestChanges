@@ -211,7 +211,7 @@ const ProductModal = () => {
 
   // Handle share functionality
   const handleShare = async () => {
-    const productUrl = `${window.location.origin}/products/${product.id}`;
+    const productUrl = `${window.location.origin}/products/${product.slug || product.id}`;
 
     if (navigator.share) {
       try {
@@ -297,9 +297,50 @@ const ProductModal = () => {
     }
   }, [product]);
 
+  useEffect(() => {
+    if (isOpen && product && window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_ids: [product.id.toString()],
+        content_name: product.title,
+        content_type: 'product',
+        value: product.basePrice,
+        currency: 'INR',
+      });
+    }
+  }, [isOpen, product?.id]);
+
   if (!isOpen || !product) return null;
 
   const currentImage = productImages[currentImageIndex];
+
+  const trackMetaAddToCart = (variantId) => {
+    if (typeof window!=='undefined'&& window.fbq) {
+      // Explicitly call track to override the automatic "SubscribedButtonClick
+      window.fbq('track', 'AddToCart', {
+        content_ids: [product.id.toString()],
+        content_name: product.title,
+        content_type: 'product',
+        value: product.basePrice,
+        currency: 'INR',
+       // content_category: product.brand?.name || product.brand || 'General',
+        // Adding the variant ID helps with Dynamic Ads
+        external_id: variantId?.toString()
+      });
+    }
+  };
+  const trackMetaAddToBag = (variantId) => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      // We use 'trackCustom' for non-standard event names
+      window.fbq('trackCustom', 'AddToBag', {
+        content_ids: [product.id.toString()],
+        content_name: product.title,
+        content_type: 'product',
+        value: product.basePrice,
+        currency: 'INR',
+        variant_id: variantId?.toString()
+      });
+    }
+  };
 
   const handleAddToCart = async (isBuyNow = false) => {
     // If ONE SIZE product, add to cart directly
@@ -308,6 +349,7 @@ const ProductModal = () => {
 
       try {
         const variantId = getSelectedVariantId();
+        trackMetaAddToBag(variantId);
 
         if (!variantId) {
           showMessage("Unable to select variant", "error");
@@ -326,6 +368,7 @@ const ProductModal = () => {
         if (!user?.id) {
           localStorage.setItem("ProductId", product.id);
           localStorage.setItem("selectedVariantId", variantId);
+          trackMetaAddToCart(variantId);
 
           // Add to Redux cart state for cart sync
           dispatch(addToCart({ product, variantId, quantity: 1 }));
@@ -367,6 +410,7 @@ const ProductModal = () => {
         if (result.status === 200 || result.status === 201) {
           // Add to Redux cart state
           dispatch(addToCart({ product, variantId }));
+          trackMetaAddToCart(variantId);
 
           if (isBuyNow) {
             // Store buyNow flag with variant ID for cart page
@@ -424,6 +468,7 @@ const ProductModal = () => {
 
     try {
       const variantId = getSelectedVariantId();
+      trackMetaAddToBag(variantId);
 
       if (!variantId) {
         showMessage("Unable to select variant", "error");
@@ -442,6 +487,7 @@ const ProductModal = () => {
 
         // Add to Redux cart state for cart sync
         dispatch(addToCart({ product, variantId, quantity: 1 }));
+        trackMetaAddToCart(variantId);
 
         if (isBuyNow) {
           // Store buyNow flag with variant ID for cart page
@@ -470,6 +516,7 @@ const ProductModal = () => {
         productId: parseInt(product.id, 10),
         variantId: parseInt(variantId, 10),
         quantity: 1,
+        city: "Delhi"
       };
 
       const result = await axiosHttp.post(endPoints.addProductToCart, payload);
@@ -477,6 +524,7 @@ const ProductModal = () => {
       if (result.status === 200 || result.status === 201) {
         // Add to Redux cart state
         dispatch(addToCart({ product, variantId }));
+        trackMetaAddToCart(variantId);
 
         if (isBuyNow) {
           // Store buyNow flag with variant ID for cart page
@@ -619,7 +667,7 @@ const ProductModal = () => {
                   (product.description?.split(" ").length > 10 ? "..." : "")}
               </p>
               <Link
-                href={`/products/${product.id}`}
+                href={`/products/${product.slug || product.id}`}
                 //target="_blank"
                 //rel="noopener noreferrer"
                 onClick={() => {

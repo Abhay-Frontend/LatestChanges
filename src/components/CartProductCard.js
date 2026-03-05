@@ -59,7 +59,7 @@ const CartProductCard = ({
 
         {/* Product Image */}
         <Link
-          href={`/products/${product.productId}`}
+          href={`/products/${product.productSlug || product.productId}`}
           className="w-[70px] h-[70px] sm:w-[100px] sm:h-[100px] md:w-[150px] md:h-[150px] flex-shrink-0"
         >
           <Image

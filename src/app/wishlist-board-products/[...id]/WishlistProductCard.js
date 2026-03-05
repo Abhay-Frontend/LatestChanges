@@ -23,11 +23,35 @@ const WishlistProductCard = () => {
     }
   }, [getBoards?.data]);
 
+  // ✅ META PIXEL: Track Board View
+  useEffect(() => {
+    if (products.length > 0 && typeof window !== "undefined" && window.fbq) {
+      window.fbq('trackCustom', 'ViewWishlistBoard', {
+        content_name: products[0]?.wishlist_board?.name,
+        content_ids: products.map(item => item.product?.id.toString()),
+        content_type: 'product_group',
+        value: products.reduce((acc, item) => acc + (item.product?.basePrice || 0), 0),
+        currency: 'INR'
+      });
+    }
+  }, [products]);
+
   if (getBoards?.error) return <div>Error loading products</div>;
 
   const handleDelete = async (productId) => {
+    // Find product before deleting for tracking
+    const deletedProduct = products.find(p => p.product?.id === productId);
+
     try {
       if (!userId || !boardId || !productId) return;
+
+      // ✅ META PIXEL: Track Remove from Wishlist (Optional)
+      if (typeof window !== "undefined" && window.fbq && deletedProduct) {
+        window.fbq('trackCustom', 'RemoveFromWishlist', {
+          content_ids: [productId.toString()],
+          content_name: deletedProduct.product?.title
+        });
+      }
 
       const payload = {
         userId,
@@ -35,20 +59,20 @@ const WishlistProductCard = () => {
         boardId: Number(boardId),
       };
 
-      // ✅ Delete API (no id in URL)
+      // Delete API (no id in URL)
       await axiosHttp.delete(endPoints.deleteBoardProduct, {
         data: payload,
       });
 
-      // ✅ Remove item locally (instant UI update)
+      // Remove item locally (instant UI update)
       setProducts((prev) =>
         prev.filter((item) => item.product?.id !== productId),
       );
 
-      // ✅ Optional: Save last deleted product id
+      // Optional: Save last deleted product id
       localStorage.setItem("wishlistProductId", productId);
 
-      // ✅ Re-fetch latest data from server (to stay in sync)
+      //  Re-fetch latest data from server (to stay in sync)
       // If your hook doesn't have refetch, call getBoards.fetch again
       if (getBoards?.refetch) {
         await getBoards.refetch();
@@ -97,6 +121,19 @@ const WishlistProductCard = () => {
                   currentPrice={product?.basePrice || 0}
                   originalPrice={product?.mrp || 0}
                   onDelete={handleDelete}
+slug={product?.slug}
+shopifyHandles={product?.shopifyHandles}
+
+onAddToBag={() => {
+  if (typeof window !== "undefined" && window.fbq) {
+    window.fbq('track', 'AddToCart', {
+      content_ids: [product.id.toString()],
+      content_name: product.title,
+      value: product.basePrice,
+      currency: 'INR'
+    });
+  }
+}}
                 />
               );
             })}

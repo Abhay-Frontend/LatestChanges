@@ -30,10 +30,14 @@ const NavbarDropdown = ({ menu, latestBlogs, onMouseEnter, onMouseLeave }) => {
       ];
     }else if (isBrandsMenu){
       return [
-        {src:"/images/brands/brand1.webp", alt:"AshnaGidwani"},
-        {src:"/images/brands/brand2.webp", alt:"ByMash"},
-        {src:"/images/brands/brand3.webp", alt:"Capisvirleo"},
-        {src:"/images/brands/brand4.webp", alt:"DripDawgs"},
+        {src:"/images/brands/brand1.webp", alt:"Sam&Marshal"},
+        {src:"/images/brands/brand2.webp", alt:"TheClothingFactory"},
+        {src:"/images/brands/brand3.webp", alt:"BrawnyMellow"},
+        {src:"/images/brands/brand4.webp", alt:"Vaire"},
+        {src:"/images/brands/brand5.webp", alt:"MyClo"},
+        {src:"/images/brands/brand6.webp", alt:"Beegle"},
+        {src:"/images/brands/brand7.webp", alt:"Sazo"},
+        {src:"/images/brands/brand8.webp", alt:"Ruheite"},
       ];
     }
     
@@ -144,7 +148,7 @@ const NavbarDropdown = ({ menu, latestBlogs, onMouseEnter, onMouseLeave }) => {
             {isBrandsMenu && categoryImages && categoryImages.length > 0 && (
               <div className="w-[420px] flex-shrink-0 max-h-[550px] mt-[10px]">
                 <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
-                  {categoryImages.slice(0, 4).map((img, index) => (
+                  {categoryImages.slice(0, 8).map((img, index) => (
                     <div
                       key={index}
                       className="relative rounded-lg overflow-hidden h-[150px] flex items-center justify-center  p-2"

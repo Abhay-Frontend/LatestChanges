@@ -25,8 +25,21 @@ const WishlistBoards = () => {
 
   // ✅ call API from main component
   const handleCreateBoard = async (boardName) => {
+    // Check if query (userId) exists
+    if (!query) {
+      toast.error("Please login to create a board");
+      return;
+    }
     try {
       await createBoard({ userId: query, name: boardName });
+
+      // ✅ META PIXEL: Track Create Wishlist
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq('trackCustom', 'CreateWishlistBoard', {
+          wishlist_name: boardName
+        });
+      }
+
       getBoards?.refetch(); // refresh list
       setIsModalOpen(false); // close modal
     } catch (error) {

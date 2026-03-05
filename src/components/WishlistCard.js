@@ -13,9 +13,12 @@ const WishlistCard = ({
   currentPrice,
   originalPrice,
   onDelete,
+  slug,
+  shopifyHandles,
 }) => {
   const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
   const router = useRouter(); // ✅ initialize router
+  const productLink = slug || shopifyHandles || id;
 
   // ✅ Calculate discount only if original price > current price
   const discount =
@@ -24,6 +27,16 @@ const WishlistCard = ({
       : 0;
 
   const handleDelete = () => {
+    // ✅ META PIXEL: Track removal (Custom Event)
+    // This helps you analyze why people are dropping items
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq('trackCustom', 'RemoveFromWishlist', {
+        content_ids: [id.toString()],
+        content_name: productName,
+        value: currentPrice,
+        currency: 'INR'
+      });
+    }
     onDelete(id);
     setShowDeleteOverlay(false);
   };
@@ -31,8 +44,18 @@ const WishlistCard = ({
   // ✅ Navigate to product details page
   const handleViewProduct = () => {
     if (id) {
+      // ✅ META PIXEL: Track clicking to view details from wishlist
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq('track', 'ViewContent', {
+          content_ids: [id.toString()],
+          content_name: productName,
+          content_type: 'product',
+          value: currentPrice,
+          currency: 'INR'
+        });
+      }
       localStorage.setItem("ProductId", id);
-      router.push(`/products/${id}`);
+      router.push(`/products/${productLink}`);
     }
   };
 

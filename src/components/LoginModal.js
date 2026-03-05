@@ -56,6 +56,22 @@ const PhoneAuthModal = () => {
       return;
     }
 
+    // ✅ BYPASS FOR LOCALHOST
+  if (process.env.NODE_ENV === "development") {
+    const dummyUser = {
+      id: 1,
+      fullName: "Test User",
+      phone: `+91${phoneNumber}`,
+      email: "test@example.com",
+      token: "dummy-token",
+    };
+
+    dispatch(setUser(dummyUser));
+    setCurrentStep("welcome");
+    return;
+  }
+
+
     setLoading(true);
     try {
       // Use different endpoints based on auth type

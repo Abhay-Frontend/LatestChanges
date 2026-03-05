@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { openWishlistModal } from "@/redux/slices/loginmodalSlice";
 import WishlistBoardModal from "./WishlistBoardModal";
 
-const BrandProductCard = ({ image, title, price, productId, mrp }) => {
+const BrandProductCard = ({ image, title, price, productId, mrp, slug, shopifyHandles }) => {
   const dispatch = useDispatch();
   const [showWishlistModal, setShowWishlistModal] = useState(false);
 
@@ -26,7 +26,7 @@ const BrandProductCard = ({ image, title, price, productId, mrp }) => {
 
   return (
     <div className="bg-white overflow-hidden  transition-shadow">
-      <Link href={`/products/${productId}`}>
+      <Link href={`/products/${slug || shopifyHandles || productId}`}>
         <div className="aspect-[4/5] overflow-hidden px-4 bg-stone-200 rounded-xl flex items-center justify-center">
           <Image
             src={image}

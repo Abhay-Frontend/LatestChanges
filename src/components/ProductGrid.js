@@ -114,6 +114,8 @@ const ProductGrid = ({
               mrp={mrp}
               discountPercentage={`${discountPercentage}`}
               id={product.id}
+              slug={product.slug}
+              shopifyHandles={product.shopifyHandles}
             />
           );
         })}

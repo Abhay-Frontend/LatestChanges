@@ -17,7 +17,8 @@ const NewestAtLafetch = () => {
   const isModalOpen = useSelector((state) => state.modal.productViewModal);
   const isWishlistModalOpen = useSelector((state) => state.modal.wishlistModal);
 
-  const topProducts = products.slice(0, 12);
+  //const topProducts = products.slice(0, 12):[];
+  const topProducts = Array.isArray(products) ? products.slice(0, 12) : [];
   const totalPages = Math.ceil(topProducts.length / ITEMS_PER_PAGE);
 
   // Auto-rotate products every 5 seconds (only when modals are NOT open and not hovering)

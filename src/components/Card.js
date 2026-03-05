@@ -22,8 +22,7 @@ const ProductCard = ({ images, title, price, id, product, brand, mrp }) => {
     dispatch(openWishlistModal()); // update redux for global modal state
   };
 
-  const productData = {
-    id,
+  const productLink = product?.slug || product?.shopifyHandles || id;
     imageUrls: images,
     title,
     brand: product?.brand?.name || "",
@@ -40,7 +39,7 @@ const ProductCard = ({ images, title, price, id, product, brand, mrp }) => {
         {/* Product Image */}
         <div className="relative bg-gray-50 overflow-hidden group w-[160px] h-[240px] md:w-[300px] md:h-[380px]">
           <Link
-            href={`/products/${id}`}
+            href={`/products/${productLink}`}
            // target="_blank"
            // rel="noopener noreferrer"
             onClick={() => localStorage.setItem("ProductId", id)}

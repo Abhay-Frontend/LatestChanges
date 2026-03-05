@@ -47,6 +47,32 @@ const ShoppingCart = () => {
     }
   }, [userId]);
 
+  // 1. Track ViewCart when products are loaded
+  useEffect(() => {
+    if (!loading && products.length > 0 && window.fbq) {
+      window.fbq('track', 'ViewCart', {
+        content_ids: products.map(p => p.productId.toString()),
+        content_type: 'product',
+        value: products.reduce((acc, p) => acc + (p.price * p.quantity), 0),
+        currency: 'INR'
+      });
+    }
+  }, [loading, products.length]);
+  // 2. Function to track InitiateCheckout (Pass this to OrderSummary)
+  const trackInitiateCheckout = () => {
+    if (typeof window !== "undefined" && window.fbq && selectedProducts.length > 0) {
+      const totalValue = selectedProducts.reduce((acc, p) => acc + (p.price * p.quantity), 0);
+      
+      window.fbq('track', 'InitiateCheckout', {
+        content_ids: selectedProducts.map(p => p.productId.toString()),
+        content_type: 'product',
+        num_items: selectedProducts.length,
+        value: totalValue,
+        currency: 'INR'
+      });
+    }
+  };
+
   // Auto-select all items ONLY when products load initially, or restore from localStorage
   useEffect(() => {
     if (products.length > 0 && isInitialMount.current) {
@@ -585,7 +611,9 @@ const ShoppingCart = () => {
                   products={selectedProducts}
                   coupons={getCoupons}
                   isUserLoggedIn={!!userId}
+                  onProceed={trackInitiateCheckout}
                   onProceedWithoutLogin={() => {
+                    trackInitiateCheckout();
                     if (!userId) {
                       dispatch(openPhoneAuthModal("checkout"));
                     }

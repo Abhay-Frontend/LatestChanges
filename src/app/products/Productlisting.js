@@ -46,7 +46,10 @@ const ShopByCategoriesPage = () => {
     const colors = searchParams.get("color");
     return colors ? colors.split(",") : [];
   }); // stores actual color values like "Black", "Red"
-  const [ selectedFits, setSelectedFits] =  useState([]);
+  const [selectedFits, setSelectedFits] = useState(() => {
+  const fits = searchParams.get("fit");
+  return fits ? fits.split(",") : [];
+  });
   const [ selectedClothingType, setSelectedClothingTypes] = useState([]);
 
 
@@ -132,6 +135,42 @@ const ShopByCategoriesPage = () => {
   const availableColors = colors || [];
 
   // ===== APPLY FILTERS ON CHANGE =====
+  // useEffect(() => {
+  //   //if (!hasFiltersApplied()) return;
+
+  //   applyFilters({
+  //     brandIds: selectedBrands,
+  //     minPrice: priceRange.min,
+  //     maxPrice: priceRange.max,
+  //     sort: selectedSort,
+  //     superCatId: selectedSuperCategory,
+  //     subCatId: subCategoryId ? Number(subCategoryId) : null,
+  //     catId: catId ? Number(catId) : null,
+  //     sizes: selectedSizes,
+  //     colors: selectedColors,
+  //     collectionId: collectionId ? Number(collectionId) : null,
+  //     fits: selectedFits,
+  //     clothingTypes:selectedClothingType,
+  //     key: searchQuery,
+  //     pageNumber:1,
+  //     isLoadMore:false,
+  //   });
+  // }, [
+
+  //   selectedBrands,
+  //   priceRange,
+  //   selectedSort,
+  //   selectedSuperCategory,
+  //   subCategoryId,
+  //   catId,
+  //   selectedSizes,
+  //   selectedColors,
+  //   collectionId,
+  //   selectedFits,
+  //   selectedClothingType,
+  //   searchQuery,
+  //   applyFilters,
+  // ]);
   useEffect(() => {
     if (!hasFiltersApplied()) return;
 

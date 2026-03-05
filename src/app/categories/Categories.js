@@ -88,6 +88,8 @@ const CategoryPage = () => {
                                 )
                               : null
                           }
+                          slug={product.slug}
+                          shopifyHandles={product.shopifyHandles}
                         />
                       ))}
                     </div>

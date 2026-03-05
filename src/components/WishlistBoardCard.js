@@ -43,7 +43,17 @@ const BoardCard = ({ board, onUpdate, onDelete }) => {
       <div className="relative overflow-hidden rounded-lg shadow-md">
         <div className="aspect-[4/5] relative">
           {/* ✅ Wrap image with Link */}
-          <Link href={`/wishlist-board-products/${board.id}`}>
+          <Link href={`/wishlist-board-products/${board.id}`}
+          onClick={() => {
+              // ✅ META PIXEL: Track viewing a specific wishlist board
+              if (typeof window !== "undefined" && window.fbq) {
+                window.fbq('trackCustom', 'ViewBoardDetails', {
+                  board_name: board.name,
+                  board_id: board.id,
+                  content_count: board.productCount
+                });
+              }
+            }}>
             <Image
               src={
                 board.thumbnail ||

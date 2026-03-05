@@ -338,15 +338,18 @@ const OrderSummary = ({
       {/* PROCEED */}
       {!isAddressPage &&
         (isUserLoggedIn ? (
+          // LOGGED IN USER: Call onProceed (Meta Track) then navigate
           <Link
             href="/checkout/address"
+            onClick={() => onProceed && onProceed()} // <--- TRIGGER TRACKING OF META PIXEL HERE
             className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition-colors font-medium mt-4 inline-block text-center"
           >
             Proceed to Checkout
           </Link>
         ) : (
+          // NOT LOGGED IN: Call onProceedWithoutLogin (Meta Track + Login Modal)
           <button
-            onClick={onProceedWithoutLogin}
+            onClick={() => onProceedWithoutLogin && onProceedWithoutLogin()}
             className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition-colors font-medium mt-4 cursor-pointer"
           >
             Proceed to Checkout

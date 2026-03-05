@@ -25,6 +25,14 @@ const CreateBoardModal = ({ productData, onClose }) => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.modal.wishlistModal); // Update selector to match slice
 
+  useEffect(() => {
+    if (isOpen && productData && typeof window !== "undefined" && window.fbq) {
+      window.fbq('trackCustom', 'WishlistModalOpen', {
+        product_name: productData.title,
+        product_id: productData.id
+      });
+    }
+  }, [isOpen]);
   const handleClose = () => {
     dispatch(closeWishlistModal());
     onClose(); // Call the onClose prop to reset the card's state
@@ -46,6 +54,11 @@ const CreateBoardModal = ({ productData, onClose }) => {
   const { data: getBoards, refetch: fetchBoards } = useGetBoard(query);
 
   const handleCreateBoard = async () => {
+    //  Check if user exists BEFORE creating payload
+    if (!user?.id) {
+      toast.error("Please login to create a board");
+      return; 
+    }
     if (!newBoardName.trim()) return;
 
     setIsCreating(true);
@@ -65,7 +78,7 @@ const CreateBoardModal = ({ productData, onClose }) => {
     } catch (error) {
       const apiMessage = error?.response?.data?.message;
 
-      if (apiMessage === "Unauthorized!") {
+      if (apiMessage === "Unauthorized!" || error?.response?.status === 401) {
         toast.error("Please login to create a board");
       } else {
         toast.error(apiMessage || "Something went wrong. Please try again.");
@@ -76,6 +89,10 @@ const CreateBoardModal = ({ productData, onClose }) => {
   };
 
   const handleContinue = async () => {
+    if (!user?.id) {
+      toast.error("Please login to save to wishlist");
+      return;
+    }
     if ((!selectedBoard && !selectedSuggestion) || !productData) return;
 
     setIsAddingProduct(true);
@@ -137,6 +154,16 @@ const CreateBoardModal = ({ productData, onClose }) => {
       const response = await addProductToBoard(boardId, productData);
 
       if (response?.success) {
+        // ✅ META PIXEL: Track successful addition to Wishlist
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq('track', 'AddToWishlist', {
+            content_ids: [productData.id ? productData.id.toString() : ""],
+            content_name: productData.title,
+            content_category: typeof productData.brand === 'object' ? productData.brand?.name : productData.brand,
+            value: parseFloat(productData.basePrice) || 0,
+            currency: 'INR'
+          });
+        }
         toast.success(response.message || "Added to board successfully");
         setTimeout(() => {
           handleClose();

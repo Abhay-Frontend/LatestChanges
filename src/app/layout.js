@@ -6,6 +6,7 @@ import { Providers } from "./providers";
 import RazorpayScriptLoader from "@/components/razorpay";
 import GlobalLoader from "@/components/GlobalLoader";
 import AnnouncementBar from "@/components/AnnouncementBar";
+import MetaPixelEvents from "@/components/MetaPixelEvent";
 // import FloatingVideoAd from "@/components/FloatingVideoAd";
 
 const clashDisplay = localFont({
@@ -47,17 +48,19 @@ export default function RootLayout({ children }) {
               !function(f,b,e,v,n,t,s)
               {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
               n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              if(!f._fbq)f.fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
               n.queue=[];t=b.createElement(e);t.async=!0;
               t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}
-              (window, document,'script',
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '708965264792579');
+              
+              fbq('set', 'autoConfig', false, '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
+              fbq('init', '${process.env.NEXT_PUBLIC_META_PIXEL_ID}');
               fbq('track', 'PageView');
             `,
           }}
         />
+          {/* fbq('set', 'autoConfig', false, '${process.env.NEXT_PUBLIC_META_PIXEL_ID}'); */}
 
         {/*Google Analytics */}
         <Script
@@ -94,18 +97,18 @@ export default function RootLayout({ children }) {
 
       </head>
 
-      <body className={`${clashDisplay.variable} antialiased`}>
+      <body className="antialiased">
 
         {/*Meta Pixel noscript fallback */}
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=708965264792579&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style={{ display: "none" }}
+          src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`}
+          alt=""
+        />
+      </noscript>
 
         <Providers>
           <AnnouncementBar />
@@ -113,6 +116,7 @@ export default function RootLayout({ children }) {
           <RazorpayScriptLoader />
           {/* <FloatingVideoAd /> */}
           {children}
+          <MetaPixelEvents/>
         </Providers>
 
       </body>

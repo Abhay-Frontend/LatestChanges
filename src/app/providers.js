@@ -6,6 +6,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import useCartSync from "@/hooks/useCartSync";
 import PhoneAuthModal from "@/components/LoginModal";
 import ProductModal from "@/components/Modal";
+import MetaPixelEvents from "@/components/MetaPixelEvent";
 
 function CartSyncWrapper({ children }) {
   useCartSync(); // Initialize cart sync - NOW INSIDE PROVIDER
@@ -22,6 +23,7 @@ export function Providers({ children }) {
           {/* Global ProductModal - Only one instance */}
           <ProductModal />
           {children}
+          <MetaPixelEvents/>
         </CartSyncWrapper>
       </PersistGate>
     </Provider>

@@ -20,7 +20,6 @@ import usegetBrands from "@/hooks/useGetBrands";
 import useGetCategoriesHierarchy from "@/hooks/useCategoriesHirerarchy";
 import useBlog from "@/hooks/useBlog";
 import useCartSync from "@/hooks/useCartSync";
-import useBanner from "@/hooks/useBanner";
 
 // ---------- Menu Builder ----------
 const getMenuData = (categories, brands ) => {
@@ -64,7 +63,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
-  const fetchBanner = useBanner("isCartBanner=false");
 
   // Sync cart with backend
   useCartSync();
@@ -423,6 +421,16 @@ const Navbar = () => {
             />
           )}
         </div>
+
+         {/* Text Below Icons */}
+            {/* Promo Strip */}
+          {/* <div
+            className="fixed top-[120px] md:top-[130px] inset-x-0 z-30 text-center hidden md:block"
+          >
+            <p className="text-[11px] md:text-xs font-bold uppercase text-[#7A6ECC] py-1 tracking-wide">
+              Download The App Now & Get 10% Off
+            </p>
+          </div> */}
 
         </div>
       </div>
