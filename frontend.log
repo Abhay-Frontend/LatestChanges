@@ -1,0 +1,43 @@
+
+> lafetch@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.5.9 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.175:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 751ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1883ms
+redux-persist failed to create sync storage. falling back to noop storage.
+ GET / 200 in 2281ms
+ GET / 200 in 68ms
+ GET / 200 in 75ms
+ GET / 200 in 125ms
+ GET / 200 in 68ms
+ GET / 200 in 102ms
+ GET / 200 in 172ms
+ GET / 200 in 121ms
+ GET / 200 in 113ms
+ GET / 200 in 127ms
+ GET / 200 in 136ms
+ ✓ Compiled /_not-found/page in 146ms
+ GET /api/refresh 404 in 185ms
+ ✓ Compiled in 83ms
+ ✓ Compiled in 39ms
+redux-persist failed to create sync storage. falling back to noop storage.
+ GET / 200 in 224ms
+ GET / 200 in 57ms
+ GET / 200 in 70ms
+redux-persist failed to create sync storage. falling back to noop storage.
+ GET / 200 in 278ms
+ GET / 200 in 77ms
+ ✓ Compiled /products in 176ms
+ GET /products?collectionId=32 200 in 200ms
+ GET /products 200 in 35ms
+ GET / 200 in 76ms
+ GET / 200 in 79ms
+ GET / 200 in 79ms
+ GET / 200 in 87ms
