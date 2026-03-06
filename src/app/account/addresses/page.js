@@ -81,7 +81,6 @@ const SavedAddresses = () => {
     }
   };
 
-
   const handleConfirmDelete = async () => {
     try {
       setDeleteLoading(true);
