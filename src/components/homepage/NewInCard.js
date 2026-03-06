@@ -21,6 +21,7 @@ const NewInCard = ({
 }) => {
   const dispatch = useDispatch();
   const [showWishlistModal, setShowWishlistModal] = useState(false);
+  const productLink = product?.slug || product?.shopifyHandles || id;
 
   const handlePreviewClick = (e) => {
     e.preventDefault();
@@ -59,7 +60,7 @@ const NewInCard = ({
   return (
     <>
       <Link
-        href={`/products/${id}`}
+        href={`/products/${productLink}`}
        
         onClick={() => localStorage.setItem("ProductId", id)}
       >

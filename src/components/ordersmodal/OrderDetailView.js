@@ -213,7 +213,7 @@ const OrderDetailView = ({ orderId, onBack, axiosHttp }) => {
       </div>
 
       {/* Product Card */}
-      <Link href={`/products/${product.id}`} className="bg-white  p-4 mb-6">
+      <Link href={`/products/${product.slug || product.id}`} className="bg-white  p-4 mb-6">
         <div className="flex gap-4">
           <Image
             src={product?.imageUrls?.[0] || "/placeholder.jpg"}

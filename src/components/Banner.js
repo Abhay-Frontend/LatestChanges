@@ -2,7 +2,7 @@ import React from "react";
 
 const FashionVideoBackground = ({ videoUrl, heroText, loading }) => {
   return (
-    <div className="relative w-full aspect-video overflow-hidden ">
+    <div className="relative w-full aspect-video overflow-hidden mt-[120px] md:mt-[128px]  ">
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"

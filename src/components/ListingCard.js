@@ -16,9 +16,12 @@ const ListingCard = ({
   mrp,
   discountPercentage,
   id,
+  slug,
+  shopifyHandles,
 }) => {
   const [showModal, setShowModal] = useState(false); // Add this state
   const dispatch = useDispatch();
+  const productLink = slug || shopifyHandles || id;
 
   const handleWishlistClick = () => {
     setShowModal(true); // Set this card's modal to show
@@ -42,7 +45,7 @@ const ListingCard = ({
       <div className="relative overflow-hidden w-full flex flex-col">
         {/* Product Image with Link */}
         <Link
-          href={`/products/${id}`}
+          href={`/products/${productLink}`}
          // target="_blank"
         //  rel="noopener noreferrer"
           onClick={() => localStorage.setItem("ProductId", id)}

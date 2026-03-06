@@ -172,39 +172,39 @@ const ShopByCategoriesPage = () => {
   //   applyFilters,
   // ]);
   useEffect(() => {
-  applyFilters({
-    brandIds: selectedBrands,
-    minPrice: priceRange.min,
-    maxPrice: priceRange.max,
-    sort: selectedSort,
-    superCatId: selectedSuperCategory,
-    subCatId: subCategoryId ? Number(subCategoryId) : null,
-    catId: catId ? Number(catId) : null,
-    sizes: selectedSizes,
-    colors: selectedColors,
-    collectionId: collectionId ? Number(collectionId) : null,
-    
-    fits: selectedFits,
-    clothingTypes: selectedClothingType,
-    key: searchQuery,
-    pageNumber: 1,
-    isLoadMore: false,
-  });
-}, [
-  selectedBrands,
-  priceRange,
-  selectedSort,
-  selectedSuperCategory,
-  subCategoryId,
-  catId,
-  selectedSizes,
-  selectedColors,
-  collectionId,
-  selectedFits,
-  selectedClothingType,
-  searchQuery,
-  applyFilters,
-]);
+    if (!hasFiltersApplied()) return;
+
+    applyFilters({
+      brandIds: selectedBrands,
+      minPrice: priceRange.min,
+      maxPrice: priceRange.max,
+      sort: selectedSort,
+      superCatId: selectedSuperCategory,
+      subCatId: subCategoryId ? Number(subCategoryId) : null,
+      catId: catId ? Number(catId) : null,
+      sizes: selectedSizes,
+      colors: selectedColors,
+      collectionId: collectionId ? Number(collectionId) : null,
+      fits: selectedFits,
+      clothingTypes:selectedClothingType,
+      key: searchQuery,
+    });
+  }, [
+
+    selectedBrands,
+    priceRange,
+    selectedSort,
+    selectedSuperCategory,
+    subCategoryId,
+    catId,
+    selectedSizes,
+    selectedColors,
+    collectionId,
+    selectedFits,
+    selectedClothingType,
+    searchQuery,
+    applyFilters,
+  ]);
 
   // ===== HANDLERS =====
   const toggleSelection = (setter, value) => {

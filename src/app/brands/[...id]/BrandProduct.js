@@ -130,6 +130,8 @@ const BrandProduct = () => {
                         price={product.basePrice}
                         mrp={product.mrp}
                         productId={product.id}
+                        slug={product.slug}
+                        shopifyHandles={product.shopifyHandles}
                         hasCOD={product.hasCOD}
                         hasExchange={product.hasExchange}
                       />
@@ -147,6 +149,8 @@ const BrandProduct = () => {
                     price={product.basePrice}
                     mrp={product.mrp}
                     productId={product.id}
+                    slug={product.slug}
+                    shopifyHandles={product.shopifyHandles}
                     hasCOD={product.hasCOD}
                     hasExchange={product.hasExchange}
                   />

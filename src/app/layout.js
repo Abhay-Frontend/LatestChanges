@@ -97,7 +97,7 @@ export default function RootLayout({ children }) {
 
       </head>
 
-      <body className={`${clashDisplay.variable} antialiased`}>
+      <body className="antialiased">
 
         {/*Meta Pixel noscript fallback */}
       <noscript>

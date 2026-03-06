@@ -13,9 +13,12 @@ const WishlistCard = ({
   currentPrice,
   originalPrice,
   onDelete,
+  slug,
+  shopifyHandles,
 }) => {
   const [showDeleteOverlay, setShowDeleteOverlay] = useState(false);
   const router = useRouter(); // ✅ initialize router
+  const productLink = slug || shopifyHandles || id;
 
   // ✅ Calculate discount only if original price > current price
   const discount =
@@ -52,7 +55,7 @@ const WishlistCard = ({
         });
       }
       localStorage.setItem("ProductId", id);
-      router.push(`/products/${id}`);
+      router.push(`/products/${productLink}`);
     }
   };
 

@@ -96,7 +96,7 @@ const ProductCollectionCard = ({ product, onLike }) => {
     <>
       <div className="w-full rounded-xl flex flex-col gap-2 overflow-hidden">
         <Link
-          href={`/products/${product.id}`}
+          href={`/products/${product.slug || product.id}`}
          // target="_blank"
           //rel="noopener noreferrer"
         >

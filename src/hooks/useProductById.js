@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axiosHttp from "@/utils/axioshttp";
 import { endPoints } from "@/utils/endpoints";
 
-const useProductById = (id) => {
+const useProductById = (slug) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,8 +11,8 @@ const useProductById = (id) => {
     try {
       setLoading(true);
       setError(null);
-      if (!id) return;
-      const endPoint = `${endPoints.productdetialsbyid}/${id}`;
+      if (!slug) return;
+      const endPoint = `${endPoints.productdetialsbyid}/${slug}`;
       const result = await axiosHttp.get(endPoint);
 
       if (result?.status === 200) {
@@ -30,7 +30,7 @@ const useProductById = (id) => {
 
   useEffect(() => {
     getProductDetails();
-  }, [id]);
+  }, [slug]);
 
   return { product, loading, error };
 };

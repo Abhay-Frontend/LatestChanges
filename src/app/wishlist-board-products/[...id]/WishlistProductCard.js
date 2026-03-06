@@ -59,20 +59,20 @@ const WishlistProductCard = () => {
         boardId: Number(boardId),
       };
 
-      // ✅ Delete API (no id in URL)
+      // Delete API (no id in URL)
       await axiosHttp.delete(endPoints.deleteBoardProduct, {
         data: payload,
       });
 
-      // ✅ Remove item locally (instant UI update)
+      // Remove item locally (instant UI update)
       setProducts((prev) =>
         prev.filter((item) => item.product?.id !== productId),
       );
 
-      // ✅ Optional: Save last deleted product id
+      // Optional: Save last deleted product id
       localStorage.setItem("wishlistProductId", productId);
 
-      // ✅ Re-fetch latest data from server (to stay in sync)
+      //  Re-fetch latest data from server (to stay in sync)
       // If your hook doesn't have refetch, call getBoards.fetch again
       if (getBoards?.refetch) {
         await getBoards.refetch();
@@ -121,17 +121,19 @@ const WishlistProductCard = () => {
                   currentPrice={product?.basePrice || 0}
                   originalPrice={product?.mrp || 0}
                   onDelete={handleDelete}
+slug={product?.slug}
+shopifyHandles={product?.shopifyHandles}
 
-                  onAddToBag={() => {
-                  if (typeof window !== "undefined" && window.fbq) {
-                    window.fbq('track', 'AddToCart', {
-                      content_ids: [product.id.toString()],
-                      content_name: product.title,
-                      value: product.basePrice,
-                      currency: 'INR'
-                    });
-                  }
-                }}
+onAddToBag={() => {
+  if (typeof window !== "undefined" && window.fbq) {
+    window.fbq('track', 'AddToCart', {
+      content_ids: [product.id.toString()],
+      content_name: product.title,
+      value: product.basePrice,
+      currency: 'INR'
+    });
+  }
+}}
                 />
               );
             })}

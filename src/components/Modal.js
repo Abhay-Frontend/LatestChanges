@@ -211,7 +211,7 @@ const ProductModal = () => {
 
   // Handle share functionality
   const handleShare = async () => {
-    const productUrl = `${window.location.origin}/products/${product.id}`;
+    const productUrl = `${window.location.origin}/products/${product.slug || product.id}`;
 
     if (navigator.share) {
       try {
@@ -667,7 +667,7 @@ const ProductModal = () => {
                   (product.description?.split(" ").length > 10 ? "..." : "")}
               </p>
               <Link
-                href={`/products/${product.id}`}
+                href={`/products/${product.slug || product.id}`}
                 //target="_blank"
                 //rel="noopener noreferrer"
                 onClick={() => {
