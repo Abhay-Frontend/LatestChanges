@@ -28,7 +28,7 @@ const ProductActions = ({
     setShowModal(true);
     dispatch(openWishlistModal());
 
-      // ✅ Meta Pixel for Wishlist
+    // ✅ Meta Pixel for Wishlist
     if (typeof window !== "undefined" && window.fbq) {
       window.fbq("track", "AddToWishlist", {
         content_ids: [selectedVariant?.id?.toString() || productData?.variants?.[0]?.id?.toString() || productData.id],
@@ -63,7 +63,7 @@ const ProductActions = ({
       dispatch(addToCart({ product: productData, variantId }));
       if (onMessage) onMessage({ type: "success", text: result.message });
 
-       // ✅ Fire the Meta Pixel event here
+      // ✅ Fire the Meta Pixel event here
       if (typeof window !== "undefined" && window.fbq) {
         window.fbq('track', 'AddToCart', {
           content_ids: [selectedVariant?.id?.toString() || variantId],
@@ -78,17 +78,17 @@ const ProductActions = ({
     }
   };
 
-  const handleBuyNow = async () =>{
-    if(!selectedVariant){
-      if(onMessage) onMessage({type:"error", text:"Please select a size"});
+  const handleBuyNow = async () => {
+    if (!selectedVariant) {
+      if (onMessage) onMessage({ type: "error", text: "Please select a size" });
       return;
     }
 
     dispatch(
       setBuyNowProduct({
         ...productData,
-        variantId:selectedVariant,
-        quantity:1,
+        variantId: selectedVariant,
+        quantity: 1,
       })
     );
 
@@ -109,7 +109,7 @@ const ProductActions = ({
   return (
     <>
       <div className="flex flex-col gap-3">
-        <button 
+        <button
           onClick={handleAddToBag}
           disabled={loading || !isInStock}
           className="w-full cursor-pointer bg-black text-white py-3.5 rounded font-bold text-sm   shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
@@ -126,7 +126,7 @@ const ProductActions = ({
 
         <button
           onClick={handleBuyNow}
- className="w-full cursor-pointer border border-gray-300 text-gray-900 py-3.5 rounded font-bold text-sm hover:border-gray-400 transition-colors">
+          className="w-full cursor-pointer border border-gray-300 text-gray-900 py-3.5 rounded font-bold text-sm hover:border-gray-400 transition-colors">
           BUY NOW
         </button>
       </div>
