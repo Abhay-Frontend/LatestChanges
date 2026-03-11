@@ -9,7 +9,7 @@ import MenCollectionSection from "./MenCollections";
 import Navbar from "@/app/(navbar)/Navbar";
 import MenCarousel from "./MenCarousel";
 import TrendingBlog from "@/app/(newsletter)/Newsletter";
-
+import ScrollButtons from "@/components/homepage/ScrollButton";
 const page = () => {
   return (
     <div>
@@ -21,6 +21,7 @@ const page = () => {
       <MenCollectionSection />
       <TrendingBlog />
       <Footer />
+      <ScrollButtons/>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import AccessoriesShopCategories from "./AccessoriesShopCategories";
 import AccessoriesCarousel from "./AccessoriesCarousel";
 import AccessoriesCollectionSection from "./AccessoriesCollections";
 import Navbar from "@/app/(navbar)/Navbar";
-
+import ScrollButtons from "@/components/homepage/ScrollButton";
 const page = () => {
   return (
     <div>
@@ -20,6 +20,7 @@ const page = () => {
       <AccessoriesCollectionSection />
       <TrendingBlog />
       <Footer />
+      <ScrollButtons/>
     </div>
   );
 };

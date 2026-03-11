@@ -32,8 +32,10 @@ const cartSlice = createSlice({
       // Ensure each item has a quantity and selected flag
       state.items = (action.payload || []).map((it) => ({
         ...it,
-        quantity: it.quantity || 1,
-        selected: typeof it.selected === "boolean" ? it.selected : true,
+        quantity: Number(it.quantity) || 1,
+        selected: it.selected ?? true,
+        // quantity: it.quantity || 1,
+        // selected: typeof it.selected === "boolean" ? it.selected : true,
       }));
       state.totalItems = state.items.length;
     },

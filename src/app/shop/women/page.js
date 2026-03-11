@@ -7,7 +7,7 @@ import CollectionSection from "./Collections";
 import Footer from "@/components/footer";
 import WomenCarousel from "./WomenCarousel";
 import TrendingBlog from "@/app/(newsletter)/Newsletter";
-
+import ScrollButtons from "@/components/homepage/ScrollButton";
 const page = () => {
   return (
     <div>
@@ -19,6 +19,7 @@ const page = () => {
       <CollectionSection />
       <TrendingBlog />
       <Footer />
+      <ScrollButtons/>
     </div>
   );
 };

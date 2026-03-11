@@ -54,6 +54,10 @@ const ProductActions = ({
       return;
     }
 
+
+    // ADD THIS: Clear Buy Now state when adding to cart
+    dispatch(setBuyNowProduct(null));
+
     const result = await addProductToCart(productId, quantity);
 
     const variantId = localStorage.getItem("selectedVariantId");
@@ -77,34 +81,51 @@ const ProductActions = ({
       if (onMessage) onMessage({ type: "error", text: result.message });
     }
   };
-
   const handleBuyNow = async () => {
+    // 1. Validation
     if (!selectedVariant) {
       if (onMessage) onMessage({ type: "error", text: "Please select a size" });
       return;
     }
 
-    dispatch(
-      setBuyNowProduct({
-        ...productData,
-        variantId: selectedVariant,
-        quantity: 1,
-      })
-    );
-
-    router.push("/checkout/address");
-
-    // ✅ Meta Pixel for Purchase Intent / InitiateCheckout
-    if (typeof window !== "undefined" && window.fbq) {
-      window.fbq("track", "InitiateCheckout", {
-        content_ids: [selectedVariant.id.toString()],
-        content_name: productData.title,
-        content_type: "product",
-        value: parseFloat(selectedVariant.price || productData.variants?.[0]?.price || 0),
-        currency: "INR",
+    try {
+      // 2. STEP 1: Initiate Checkout (Direct Mode)
+      // This follows your guide: POST /checkout/initiate
+      const response = await axiosHttp.post("/checkout/initiate", {
+        mode: "direct",
+        productId: productId,
+        variantId: selectedVariant.id,
+        quantity: quantity,
       });
+
+      if (response.data?.success) {
+        const { checkoutSessionId } = response.data.data;
+
+        // 3. Store the session ID (Required for Step 2: Address)
+        localStorage.setItem("checkoutSessionId", checkoutSessionId);
+
+        // ✅ Meta Pixel for InitiateCheckout
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq("track", "InitiateCheckout", {
+            content_ids: [selectedVariant.id.toString()],
+            content_name: productData.title,
+            content_type: "product",
+            value: parseFloat(selectedVariant.price),
+            currency: "INR",
+          });
+        }
+
+        // 4. Redirect to Step 2 (The Address page we already fixed)
+        router.push("/checkout/address");
+      }
+    } catch (error) {
+      if (error?.response?.status === 400) {
+        if (onMessage) onMessage({ type: "error", text: error.response.data.message });
+      } else {
+        if (onMessage) onMessage({ type: "error", text: "Could not start checkout. Try again." });
+      }
     }
-  }
+  };
 
   return (
     <>

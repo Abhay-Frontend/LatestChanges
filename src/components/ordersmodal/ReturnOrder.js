@@ -120,7 +120,7 @@ const ReturnModal = ({ order, onClose = () => {}, onSuccess = () => {} }) => {
           {/* Product Info */}
           <div className="flex gap-4">
             <Image
-              src={order?.product?.imageUrls?.[0] || "/api/placeholder/80/120"}
+              src={order?.product?.imageUrls?.[0] || "/placeholder/80/120"}
               alt={order?.product?.title}
               width={80}
               height={112}

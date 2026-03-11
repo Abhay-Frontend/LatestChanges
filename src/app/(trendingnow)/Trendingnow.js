@@ -199,6 +199,16 @@ const TrendingNowSection = () => {
                 </button>
               </div>
             </div>
+              {/* Banners Section */}
+            {banners.length > 0 && (
+              <div className="mt-6 -mx-4 sm:-mx-6 md:-mx-10">
+                <BannerGrid
+                  banners={banners}
+                  bannerCount={banners.length}
+                  displayFor="homepage"
+                />
+              </div>
+            )}
 
             {/* Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
@@ -257,17 +267,6 @@ const TrendingNowSection = () => {
                 </div>
               )}
             </div>
-
-            {/* Banners Section */}
-            {banners.length > 0 && (
-              <div className="mt-6 -mx-4 sm:-mx-6 md:-mx-10">
-                <BannerGrid
-                  banners={banners}
-                  bannerCount={banners.length}
-                  displayFor="homepage"
-                />
-              </div>
-            )}
           </section>
         );
       })}
